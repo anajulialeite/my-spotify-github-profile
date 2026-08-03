@@ -3,8 +3,8 @@ module.exports = async function handler(req, res) {
   const refresh_token = url.searchParams.get("refresh_token") || (req.query && req.query.refresh_token) || process.env.SPOTIFY_REFRESH_TOKEN;
   const bar_color = url.searchParams.get("bar_color") || (req.query && req.query.bar_color) || "780099";
   const bg_color = url.searchParams.get("background_color") || (req.query && req.query.background_color) || "121212";
-  const client_id = process.env.SPOTIFY_CLIENT_ID || "";
-  const client_secret = process.env.SPOTIFY_SECRET_ID || "";
+  const client_id = process.env.SPOTIFY_CLIENT_ID || "bd7782fe715946f0bf753c52dcb0a5eb";
+  const client_secret = process.env.SPOTIFY_SECRET_ID || "bb12c486ac734a389188ee8ed75e43f2";
 
   let songName = "Currently not playing", artistName = "Offline", statusText = "Offline", statusColor = "#ff1616";
 
@@ -56,7 +56,7 @@ module.exports = async function handler(req, res) {
   <style>
     .status { font-family: -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif; font-weight: bold; font-size: 13px; fill: ${statusColor}; }
     .song { font-family: -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif; font-weight: bold; font-size: 16px; fill: #ffffff; }
-    .artist { font-family: -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif; font-weight: bold; font-size: 14px; fill: #b3b3b3; }
+    .artist { font-family: -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif; font-size: 14px; fill: #b3b3b3; }
   </style>
   <text x="20" y="35" class="status">${statusText}</text>
   <text x="20" y="70" class="song">${cleanSong.slice(0, 28)}</text>
