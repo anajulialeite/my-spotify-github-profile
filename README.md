@@ -29,33 +29,33 @@ Please replace your old endpoint `https://spotify-github-profile.vercel.app` to 
 
 - Click `Connect with Spotify` button below to grant permission
 
-[<img src="/img/btn-spotify.png">](https://spotify-github-profile.kittinanx.com/api/login)
+[<img src="https://raw.githubusercontent.com/kittinan/spotify-github-profile/master/img/btn-spotify.png">](https://my-spotify-github-profile-c16z.vercel.app/api/login)
 
 ## Example
 
 - Default theme
 
-![spotify-github-profile](/img/default.svg)
+![spotify-github-profile](https://raw.githubusercontent.com/kittinan/spotify-github-profile/master/img/default.svg)
 
 - Compact theme
 
-![spotify-github-profile](/img/compact.svg)
+![spotify-github-profile](https://raw.githubusercontent.com/kittinan/spotify-github-profile/master/img/compact.svg)
 
 - Natemoo-re theme
 
-![spotify-github-profile](/img/natemoo-re.svg)
+![spotify-github-profile](https://raw.githubusercontent.com/kittinan/spotify-github-profile/master/img/natemoo-re.svg)
 
 - Novatorem theme
 
-![spotify-github-profile](/img/novatorem.svg)
+![spotify-github-profile](https://raw.githubusercontent.com/kittinan/spotify-github-profile/master/img/novatorem.svg)
 
 - Karaoke theme
 
-![spotify-github-profile](/img/karaoke.svg)
+![spotify-github-profile](https://raw.githubusercontent.com/kittinan/spotify-github-profile/master/img/karaoke.svg)
 
 - Spotify Embed theme (NEW!)
 
-![spotify-github-profile](/img/spotify-embed.svg)
+![spotify-github-profile](https://raw.githubusercontent.com/kittinan/spotify-github-profile/master/img/spotify-embed.svg)
 
 ## Running for development locally without Vercel
 
