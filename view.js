@@ -1,4 +1,4 @@
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   const refresh_token = req.query.refresh_token || process.env.SPOTIFY_REFRESH_TOKEN;
   const bar_color = req.query.bar_color || "780099";
   const bg_color = req.query.background_color || "121212";
@@ -50,7 +50,7 @@ export default async function handler(req, res) {
   <style>
     .status { font-family: -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif; font-weight: bold; font-size: 13px; fill: ${statusColor}; }
     .song { font-family: -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif; font-weight: bold; font-size: 16px; fill: #ffffff; }
-    .artist { font-family: -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif; font-size: 14px; fill: #b3b3b3; }
+    .artist { font-family: -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif; font-weight: bold; font-size: 14px; fill: #b3b3b3; }
   </style>
   <text x="20" y="35" class="status">${statusText}</text>
   <text x="20" y="70" class="song">${songName.slice(0, 28)}</text>
@@ -61,4 +61,4 @@ export default async function handler(req, res) {
   res.setHeader("Content-Type", "image/svg+xml");
   res.setHeader("Cache-Control", "s-maxage=1, stale-while-revalidate");
   return res.send(svg);
-}
+};
