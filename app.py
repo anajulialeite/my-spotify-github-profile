@@ -3,8 +3,13 @@ import importlib
 import sys
 import os
 
-# Add current directory to sys.path for Vercel imports
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+# Add root and api directory to sys.path for Vercel imports
+root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+api_dir = os.path.dirname(os.path.abspath(__file__))
+if root_dir not in sys.path:
+    sys.path.insert(0, root_dir)
+if api_dir not in sys.path:
+    sys.path.insert(0, api_dir)
 
 # Import legacy handlers (order matters for Firebase init)
 login_module = importlib.import_module("login")
