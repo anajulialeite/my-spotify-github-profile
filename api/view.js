@@ -21,8 +21,8 @@ module.exports = async function handler(req, res) {
       },
       body: new URLSearchParams({
         grant_type: "refresh_token",
-        refresh_token,
-      }),
+        refresh_token: refresh_token,
+      }).toString(),
     });
 
     if (tokenRes.ok) {
@@ -33,29 +33,49 @@ module.exports = async function handler(req, res) {
         const nowRes = await fetch("https://api.spotify.com/v1/me/player/currently-playing", {
           headers: { Authorization: `Bearer ${access_token}` },
         });
+
         if (nowRes.status === 200) {
           const nowData = await nowRes.json();
-          if (nowData && nowData.is_playing) {
-            songName = nowData.item.name || "Unknown";
-            artistName = (nowData.item.artists || []).map((a) => a.name).join(", ") || "Unknown";
-            statusText = "Now playing on Spotify";
-            statusColor = "#1DB954";
+          if (nowData && nowData.item) {
+            songName = nowData.item.name || "Musica Desconhecida";
+            artistName = (nowData.item.artists || []).map((a) => a.name).join(", ") || "Artista Desconhecido";
+            statusText = nowData.is_playing ? "Now playing on Spotify" : "Recently played";
+            statusColor = nowData.is_playing ? "#1DB954" : "#780099";
+          }
+        }
+
+        if (songName === "Currently not playing") {
+          const recentRes = await fetch("https://api.spotify.com/v1/me/player/recently-played?limit=1", {
+            headers: { Authorization: `Bearer ${access_token}` },
+          });
+          if (recentRes.status === 200) {
+            const recentData = await recentRes.json();
+            if (recentData && recentData.items && recentData.items.length > 0) {
+              const track = recentData.items[0].track;
+              songName = track.name || "Musica Desconhecida";
+              artistName = (track.artists || []).map((a) => a.name).join(", ") || "Artista Desconhecido";
+              statusText = "Recently played";
+              statusColor = "#780099";
+            }
           }
         }
       }
     }
   }
 
+  const cleanSong = songName.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const cleanArtist = artistName.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
   const svg = `<svg width="320" height="145" xmlns="http://www.w3.org/2000/svg" role="img">
   <rect width="100%" height="100%" rx="10" fill="#${bg_color}"/>
   <style>
     .status { font-family: -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif; font-weight: bold; font-size: 13px; fill: ${statusColor}; }
     .song { font-family: -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif; font-weight: bold; font-size: 16px; fill: #ffffff; }
-    .artist { font-family: -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif; font-size: 14px; fill: #b3b3b3; }
+    .artist { font-family: -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif; font-weight: bold; font-size: 14px; fill: #b3b3b3; }
   </style>
   <text x="20" y="35" class="status">${statusText}</text>
-  <text x="20" y="70" class="song">${songName.slice(0, 28)}</text>
-  <text x="20" y="95" class="artist">${artistName.slice(0, 32)}</text>
+  <text x="20" y="70" class="song">${cleanSong.slice(0, 28)}</text>
+  <text x="20" y="95" class="artist">${cleanArtist.slice(0, 32)}</text>
   <rect x="20" y="115" width="280" height="4" rx="2" fill="#${bar_color}"/>
 </svg>`;
 
