@@ -12,54 +12,49 @@ module.exports = async function handler(req, res) {
   let statusColor = "#ff1616";
 
   if (refresh_token) {
-    const basic = Buffer.from(`${client_id}:${client_secret}`).toString("base64");
-    const tokenRes = await fetch("https://accounts.spotify.com/api/token", {
-      method: "POST",
-      headers: {
-        Authorization: `Basic ${basic}`,
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
-        grant_type: "refresh_token",
-        refresh_token: refresh_token,
-      }).toString(),
-    });
+    try {
+      const basic = Buffer.from(`${client_id}:${client_secret}`).toString("base64");
+      const tokenRes = await fetch("https://accounts.spotify.com/api/token", {
+        method: "POST",
+        headers: { Authorization: `Basic ${basic}`, "Content-Type": "application/x-www-form-urlencoded" },
+        body: `grant_type=refresh_token&refresh_token=${encodeURIComponent(refresh_token)}`
+      });
 
-    if (tokenRes.ok) {
-      const tokenData = await tokenRes.json();
-      const access_token = tokenData.access_token;
-
-      if (access_token) {
-        const nowRes = await fetch("https://api.spotify.com/v1/me/player/currently-playing", {
-          headers: { Authorization: `Bearer ${access_token}` },
-        });
-
-        if (nowRes.status === 200) {
-          const nowData = await nowRes.json();
-          if (nowData && nowData.item) {
-            songName = nowData.item.name || "Musica Desconhecida";
-            artistName = (nowData.item.artists || []).map((a) => a.name).join(", ") || "Artista Desconhecido";
-            statusText = nowData.is_playing ? "Now playing on Spotify" : "Recently played";
-            statusColor = nowData.is_playing ? "#1DB954" : "#780099";
-          }
-        }
-
-        if (songName === "Currently not playing") {
-          const recentRes = await fetch("https://api.spotify.com/v1/me/player/recently-played?limit=1", {
-            headers: { Authorization: `Bearer ${access_token}` },
+      if (tokenRes.ok) {
+        const tokenData = await tokenRes.json();
+        const access_token = tokenData.access_token;
+        if (access_token) {
+          const nowRes = await fetch("https://api.spotify.com/v1/me/player/currently-playing", {
+            headers: { Authorization: `Bearer ${access_token}` }
           });
-          if (recentRes.status === 200) {
-            const recentData = await recentRes.json();
-            if (recentData && recentData.items && recentData.items.length > 0) {
-              const track = recentData.items[0].track;
-              songName = track.name || "Musica Desconhecida";
-              artistName = (track.artists || []).map((a) => a.name).join(", ") || "Artista Desconhecido";
-              statusText = "Recently played";
-              statusColor = "#780099";
+          if (nowRes.status === 200) {
+            const nowData = await nowRes.json();
+            if (nowData && nowData.item) {
+              songName = nowData.item.name || "Musica Desconhecida";
+              artistName = (nowData.item.artists || []).map(a => a.name).join(", ") || "Artista Desconhecido";
+              statusText = nowData.is_playing ? "Now playing on Spotify" : "Recently played";
+              statusColor = nowData.is_playing ? "#1DB954" : "#780099";
+            }
+          }
+          if (songName === "Currently not playing") {
+            const recentRes = await fetch("https://api.spotify.com/v1/me/player/recently-played?limit=1", {
+              headers: { Authorization: `Bearer ${access_token}` }
+            });
+            if (recentRes.status === 200) {
+              const recentData = await recentRes.json();
+              if (recentData && recentData.items && recentData.items.length > 0) {
+                const track = recentData.items[0].track;
+                songName = track.name || "Musica Desconhecida";
+                artistName = (track.artists || []).map(a => a.name).join(", ") || "Artista Desconhecido";
+                statusText = "Recently played";
+                statusColor = "#780099";
+              }
             }
           }
         }
       }
+    } catch (e) {
+      console.error(e);
     }
   }
 
