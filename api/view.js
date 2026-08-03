@@ -6,10 +6,7 @@ module.exports = async function handler(req, res) {
   const client_id = process.env.SPOTIFY_CLIENT_ID || "";
   const client_secret = process.env.SPOTIFY_SECRET_ID || "";
 
-  let songName = "Currently not playing";
-  let artistName = "Offline";
-  let statusText = "Offline";
-  let statusColor = "#ff1616";
+  let songName = "Currently not playing", artistName = "Offline", statusText = "Offline", statusColor = "#ff1616";
 
   if (refresh_token) {
     try {
@@ -19,14 +16,11 @@ module.exports = async function handler(req, res) {
         headers: { Authorization: `Basic ${basic}`, "Content-Type": "application/x-www-form-urlencoded" },
         body: `grant_type=refresh_token&refresh_token=${encodeURIComponent(refresh_token)}`
       });
-
       if (tokenRes.ok) {
         const tokenData = await tokenRes.json();
         const access_token = tokenData.access_token;
         if (access_token) {
-          const nowRes = await fetch("https://api.spotify.com/v1/me/player/currently-playing", {
-            headers: { Authorization: `Bearer ${access_token}` }
-          });
+          const nowRes = await fetch("https://api.spotify.com/v1/me/player/currently-playing", { headers: { Authorization: `Bearer ${access_token}` } });
           if (nowRes.status === 200) {
             const nowData = await nowRes.json();
             if (nowData && nowData.item) {
@@ -37,9 +31,7 @@ module.exports = async function handler(req, res) {
             }
           }
           if (songName === "Currently not playing") {
-            const recentRes = await fetch("https://api.spotify.com/v1/me/player/recently-played?limit=1", {
-              headers: { Authorization: `Bearer ${access_token}` }
-            });
+            const recentRes = await fetch("https://api.spotify.com/v1/me/player/recently-played?limit=1", { headers: { Authorization: `Bearer ${access_token}` } });
             if (recentRes.status === 200) {
               const recentData = await recentRes.json();
               if (recentData && recentData.items && recentData.items.length > 0) {
@@ -53,9 +45,7 @@ module.exports = async function handler(req, res) {
           }
         }
       }
-    } catch (e) {
-      console.error(e);
-    }
+    } catch (e) { console.error(e); }
   }
 
   const cleanSong = songName.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
