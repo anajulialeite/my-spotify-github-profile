@@ -1,171 +1,91 @@
-# spotify-github-profile
+# 🎵 Meu Spotify no Perfil do GitHub
 
-Create Spotify now playing card on your github profile
+Crie um cartão em tempo real com a música que você está ouvindo no Spotify para exibir no seu perfil do GitHub!
 
-Running on Vercel serverless function, store data in Firebase (store only access_token, refresh_token, token_expired_timestamp)
+Rodando nativamente em Serverless Functions na Vercel de forma 100% gratuita e autônoma.
 
-## Annoucements
+## 📌 Sumário
+- [Conectar e Conceder Permissão](#-conectar-e-conceder-permissão)
+- [Exemplos de Temas](#-exemplos-de-temas)
+- [Como Configurar o Projeto](#-como-configurar-o-projeto)
+  - [1. Configurar na Vercel](#1-configurar-na-vercel)
+  - [2. Configurar no Spotify Developer](#2-configurar-no-spotify-developer)
+- [Executando Localmente](#-executando-localmente)
+- [Créditos](#-créditos)
 
-**2024-06-21**
+---
 
-Vercel change the package the free tier is not enough for our usage. I moved service to self-host at Digital Ocean.
+## 🔐 Conectar e Conceder Permissão
 
-Please replace your old endpoint `https://spotify-github-profile.vercel.app` to `https://spotify-github-profile.kittinanx.com`
+Clique no botão abaixo para conectar sua conta do Spotify ao seu aplicativo:
 
-## Table of Contents  
-[Connect And Grant Permission](#connect-and-grant-permission)  
-[Example](#example)  
-[Running for development locally](#running-for-development-locally)  
-[Setting up Vercel](#setting-up-vercel)  
-[Setting up Firebase](#setting-up-firebase)  
-[Setting up Spotify dev](#setting-up-spotify-dev)  
-[Running locally](#running-locally)  
-[How to Contribute](#how-to-contribute)  
-[Known Bugs](#known-bugs)  
-[Features in Progress](#features-in-progress)  
-[Credit](#credit)  
+[<img src="https://raw.githubusercontent.com/kittinan/spotify-github-profile/master/img/btn-spotify.png" alt="Conectar com o Spotify">](https://my-spotify-github-profile-c16z.vercel.app/api/login)
 
-## Connect And Grant Permission
+---
 
-- Click `Connect with Spotify` button below to grant permission
+## 🎨 Exemplos de Temas
 
-[<img src="https://raw.githubusercontent.com/kittinan/spotify-github-profile/master/img/btn-spotify.png">](https://my-spotify-github-profile-c16z.vercel.app/api/login)
-
-## Example
-
-- Default theme
+- **Tema Padrão (Default)**
 
 ![spotify-github-profile](https://raw.githubusercontent.com/kittinan/spotify-github-profile/master/img/default.svg)
 
-- Compact theme
+- **Tema Compacto (Compact)**
 
 ![spotify-github-profile](https://raw.githubusercontent.com/kittinan/spotify-github-profile/master/img/compact.svg)
 
-- Natemoo-re theme
+- **Tema Natemoo-re**
 
 ![spotify-github-profile](https://raw.githubusercontent.com/kittinan/spotify-github-profile/master/img/natemoo-re.svg)
 
-- Novatorem theme
+- **Tema Novatorem**
 
 ![spotify-github-profile](https://raw.githubusercontent.com/kittinan/spotify-github-profile/master/img/novatorem.svg)
 
-- Karaoke theme
+- **Tema Karaoke**
 
 ![spotify-github-profile](https://raw.githubusercontent.com/kittinan/spotify-github-profile/master/img/karaoke.svg)
 
-- Spotify Embed theme (NEW!)
+- **Tema Player do Spotify (Spotify Embed)**
 
 ![spotify-github-profile](https://raw.githubusercontent.com/kittinan/spotify-github-profile/master/img/spotify-embed.svg)
 
-## Running for development locally without Vercel
+---
 
-To run the application locally without Vercel:
+## ⚙️ Como Configurar o Projeto
 
-1. Copy `.env.example` to `.env` in the root directory and replace the placeholder values with your actual configuration.
+### 1. Configurar na Vercel
+1. Importe este repositório para o seu painel da Vercel.
+2. Em **Settings > Environment Variables**, adicione as seguintes variáveis de ambiente:
+   - `SPOTIFY_CLIENT_ID`: ID do seu aplicativo no Spotify.
+   - `SPOTIFY_SECRET_ID`: Chave secreta do seu aplicativo no Spotify.
+   - `BASE_URL`: O link da sua API na Vercel (Exemplo: `https://my-spotify-github-profile-c16z.vercel.app/api`).
 
-2. Install the required dependencies:
-   ```sh
-   pip install -r api/requirements.txt
+### 2. Configurar no Spotify Developer
+1. Acesse o [Spotify Developer Dashboard](https://developer.spotify.com/dashboard).
+2. Abra o seu aplicativo e vá em **Settings**.
+3. Em **Redirect URIs**, adicione a URL exata do seu callback:
+   `https://my-spotify-github-profile-c16z.vercel.app/api/callback`
+4. Salve as alterações.
+
+---
+
+## 💻 Executando Localmente
+
+Para rodar o projeto na sua máquina:
+
+1. Crie um arquivo `.env` na raiz do projeto com o seguinte conteúdo:
+   ```env
+   BASE_URL='http://localhost:3000/api'
+   SPOTIFY_CLIENT_ID='seu_client_id'
+   SPOTIFY_SECRET_ID='seu_client_secret'
    ```
 
-3. Run the application:
-   ```sh
-   python api/app.py
-   ```
+2. Acesse a rota de login local no navegador:
+   `http://localhost:3000/api/login`
 
-4. Access the login page at http://localhost:3000/api/login
+---
 
-Note: Ensure your Spotify app's redirect URI is set to `http://localhost:3000/api/callback` and `BASE_URL` in `.env` is set to `http://localhost:3000/api`.
+## 👏 Créditos
 
-
-## Running for development locally with Vercel
-
-To develop locally, you need:
-
-- A fork of this project as your repository
-- A Vercel project connected with the forked repository
-- A Firebase project with Cloud Firestore setup
-- A Spotify developer account
-
-### Setting up Vercel
-
-- [Create a new Vercel project by importing](https://vercel.com/import) the forked project on GitHub
-
-### Setting up Firebase
-
-- Create [a new Firebase project](https://console.firebase.google.com/u/0/)
-- Create a new Cloud Firestore in the project
-- Download configuration JSON file from _Project settings_ > _Service accounts_ > _Generate new private key_
-- Convert private key content as BASE64
-  - You can use Encode/Decode extension in VSCode to do so
-  - This key will be used in step explained below
-
-### Setting up Spotify dev
-
-- Login to [developer.spotify.com](https://developer.spotify.com/dashboard/applications)
-- Create a new project
-- Edit settings to add _Redirect URIs_
-  - add `http://localhost:3000/api/callback`
-
-### Running locally
-
-- Install [Vercel command line](https://vercel.com/download) with `npm i -g vercel`
-- Create `.env` file at the root of the project 
-- Paste your keys in `SPOTIFY_CLIENT_ID`, `SPOTIFY_SECRET_ID`, and insert the name of your downloaded JSON file in `FIREBASE`
-
-
-```sh
-BASE_URL='http://localhost:3000/api'
-SPOTIFY_CLIENT_ID='____'
-SPOTIFY_SECRET_ID='____'
-FIREBASE='__BASE64_FIREBASE_JSON_FILE__'
-```
-
-- Run `vercel dev`
-
-```sh
-$ vercel dev
-Vercel CLI 20.1.2 dev (beta) — https://vercel.com/feedback
-> Ready! Available at http://localhost:3000
-```
-
-- Now try to access http://localhost:3000/api/login
-
-### Run unittest
-
-- Run all tests
-```sh
-pytest tests/ -v
-```
-
-- Run tests with coverage
-```sh
-pytest tests/ --cov=api --cov-report=html
-```
-
-- Run specific test file
-```sh
-pytest tests/test_api_view.py -v
-```
-
-- Run with maxfail (like CI)
-```sh
-pytest tests/ --maxfail=5 --disable-warnings -v
-```
-
-## How to Contribute
-
-- Develop locally and submit a pull request!
-- Submit newly encountered bugs to the [Issues](https://github.com/kittinan/spotify-github-profile/issues) page
-- Submit feature suggestions to the [Issues](https://github.com/kittinan/spotify-github-profile/issues) page, with the label [Feature Suggestion]
-
-## Known Bugs
-
-[404/500 Error when playing local files](https://github.com/kittinan/spotify-github-profile/issues/19)
-
-## Other Platforms
-- [Apple Music GitHub Profile](https://github.com/rayriffy/apple-music-github-profile)
-
-## Credit
-
-Inspired by https://github.com/natemoo-re
+- Projeto original por [@kittinan](https://github.com/kittinan/spotify-github-profile)
+- Inspirado por [@natemoo-re](https://github.com/natemoo-re)
